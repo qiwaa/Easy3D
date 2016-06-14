@@ -10,6 +10,7 @@ private:
 
 public:
 	TextureBMP(const char* imagePath);
+	TextureBMP(const wchar_t* imagePath);
 	~TextureBMP();
 	unsigned int Width();
 	unsigned int Height();

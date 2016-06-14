@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <tchar.h>
 
 unsigned int TextureBMP::Width()
 {
@@ -48,7 +49,6 @@ TextureBMP::TextureBMP(const char* imagePath)
 	unsigned char header[54];	//头部信息
 	unsigned int dataPos;		//实际数据开始的位置
 	unsigned int imageSize;		//width*height*3
-
 
 	FILE* file = fopen(imagePath,"rb");
 	if (!file)
@@ -101,7 +101,63 @@ TextureBMP::TextureBMP(const char* imagePath)
 	fclose(file);
 }
 
+TextureBMP::TextureBMP(const wchar_t* imagePath)
+{
 
+	unsigned char header[54];	//头部信息
+	unsigned int dataPos;		//实际数据开始的位置
+	unsigned int imageSize;		//width*height*3
+
+	FILE* file = _wfopen(imagePath, _T("rb"));
+	if (!file)
+	{
+		printf("can't find image in %s",imagePath);
+	}
+
+	if (fread(header,1,54,file)!=54)
+	{
+		printf("Not a correct BMP file,达不到首部的长度\n");
+
+	}
+
+	if (header[0]!= 'B'||header[1]!='M')
+	{
+		printf("Not a correct BMP file，非BM\n");
+	}
+
+	//确定这是一个24bpp file
+	if (*(int*)&(header[0x1E])!= 0) 
+	{
+		printf("Not a correct BMP file，非24bpp\n");
+	}
+	if (*(int*)&(header[0x1C])!= 24)	//字节越靠后越大，18 00 00 00指的是0x18
+	{
+		printf("Not a correct BMP file，非24bpp，是%d\n",*(int*)&(header[0x1E]));
+	}
+
+	dataPos = *(int*)&(header[0x0A]);
+	imageSize = *(int*)&(header[0x22]);
+	width = *(int*)&(header[0x12]);
+	height = *(int*)&(header[0x16]);
+
+	int num = *(int*)&(header[0x0a]);
+
+
+	if (imageSize == 0)
+	{
+		imageSize = width * height *3;
+	}
+	if (dataPos == 0)
+	{
+		dataPos = 54;
+	}
+
+	data = new unsigned char[imageSize];
+
+	fread(data,1,imageSize,file);
+
+	fclose(file);
+}
 
 TextureBMP::~TextureBMP()
 {

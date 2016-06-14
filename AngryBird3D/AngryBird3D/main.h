@@ -1,6 +1,8 @@
 #ifndef _main_h
 #define _main_h
 
+#include <string>
+#include <iostream>
 #include "WindowsRelated.h"
 
 #define RENDER_STATE_WIREFRAME      1		// äÖÈ¾Ïß¿ò
@@ -32,5 +34,7 @@ typedef struct {
 	matrix_t transform;     // transform = world * view * projection
 	float w, h;             // ÆÁÄ»´óÐ¡
 }	transform_t;
+
+using namespace std;
 
 #endif

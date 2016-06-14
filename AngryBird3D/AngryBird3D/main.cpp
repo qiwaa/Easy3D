@@ -131,7 +131,31 @@ void draw_box(RenderDevice *device, float theta) {
 
 void init_texture(RenderDevice *device) {
 
-	TextureBMP * _bmp = new TextureBMP("C:\\Users\\hzchenminjian\\Desktop\\MyCode\\AngryBird3D\\AngryBird3D\\Resources\\yin.bmp");
+	wchar_t last[1000] = L"\\AngryBird3D\\Resources\\yin.bmp";		//图片在工程内位置
+	wchar_t buf[1000];												//图片在硬盘的位置
+	GetModuleFileName(NULL,buf,sizeof(buf));
+	//wcout<<"Texture Location："<<buf<<endl;
+	for (int i=wcslen(buf)-1,k=2;i>=0&&k>0;i--)
+	{
+		if (buf[i]==L'\\')
+		{
+			buf[i] = L'\0';
+			k--;
+		}
+	}
+	//wcout<<"Texture Location："<<buf<<endl;
+	for (int i = 0,j = wcslen(buf);i<wcslen(last);i++,j++)
+	{
+		buf[j] = last[i];
+		if (i == wcslen(last) - 1)
+		{
+			buf[j+1] = L'\0';
+		}
+	}
+	wcout<<"Texture Location："<<buf<<endl;
+
+	//TextureBMP * _bmp = new TextureBMP("C:\\Users\\hzchenminjian\\Desktop\\MyCode\\AngryBird3D\\AngryBird3D\\Resources\\yin.bmp");
+	TextureBMP * _bmp = new TextureBMP(buf);
 	printf("Width:%d,Height:%d",_bmp->Width(),_bmp->Height());
 
 
