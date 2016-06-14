@@ -27,3 +27,6 @@
 *.exe
 *.out
 *.app
+
+# by me
+*.tlog
