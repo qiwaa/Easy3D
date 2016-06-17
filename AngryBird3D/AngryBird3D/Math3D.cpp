@@ -28,10 +28,13 @@ float Math3D::vector_length(const vector_t *v) {
 
 // z = x + y
 void Math3D::vector_add(vector_t *z, const vector_t *x, const vector_t *y) {
+	//vector4 v(x->x + y->x,x->y + y->y,x->z + y->z,1.0);
+
 	z->x = x->x + y->x;
 	z->y = x->y + y->y;
 	z->z = x->z + y->z;
 	z->w = 1.0;
+	
 }
 
 // z = x - y
@@ -177,8 +180,10 @@ void Math3D::matrix_set_lookat(matrix_t *m, const vector_t *eye, const vector_t 
 
 	vector_sub(&zaxis, at, eye);
 	vector_normalize(&zaxis);
+
 	vector_crossproduct(&xaxis, up, &zaxis);
 	vector_normalize(&xaxis);
+	  
 	vector_crossproduct(&yaxis, &zaxis, &xaxis);
 
 	m->m[0][0] = xaxis.x;
@@ -320,7 +325,7 @@ int Math3D::trapezoid_init_triangle(trapezoid_t *trap, const vertex_t *p1,
 		trap[1].top = p2->pos.y;
 		trap[1].bottom = p3->pos.y;
 
-		k = (p3->pos.y - p1->pos.y) / (p2->pos.y - p1->pos.y);
+		k = (p3->pos.y - p1->pos.y) / (p2->pos.y - p1->pos.y);		//延长p1p2长度，使其y值与p3的y值相同，然后对比其x值，可区分p2在左边还是右边
 		x = p1->pos.x + (p2->pos.x - p1->pos.x) * k;
 
 		if (x <= p3->pos.x) {		// triangle left，p2在p1p3线段的左边

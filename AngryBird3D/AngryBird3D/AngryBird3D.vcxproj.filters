@@ -33,6 +33,18 @@
     <ClCompile Include="TextureBMP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vector4.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsRelated.h">
@@ -48,6 +60,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TextureBMP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vector4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="type_vec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include "RenderDevice.h"
+#include "vector4.h"
 
 class Math3D
 {

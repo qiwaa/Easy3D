@@ -3,6 +3,8 @@
 #include "Math3D.h"
 #include "RenderDevice.h"
 #include "TextureBMP.h"
+#include "ObjLoader.h"
+#include "GameObject.h"
 
 int screen_w, screen_h;					//屏幕宽高
 int screen_exit = 0;					//控制屏幕退出
@@ -19,7 +21,8 @@ vertex_t mesh[8] = {
 };
 
 void camera_at_zero(RenderDevice *device, float x, float y, float z) {
-	point_t eye = { x, y, z, 1 }, at = { 0, 0, 0, 1 }, up = { 0, 0, 1, 1 };
+	point_t eye = { x, y, z, 1 }, at = { 0, 0, 0, 1 }, up = { 0, 0, 1, 1 };	//draw box
+	//point_t eye = { x, y, z, 1 }, at = { 0, 0, 0, 1 }, up = { 0, 1, 0, 1 };		//draw monkey
 	Math3D::matrix_set_lookat(&(device->GetTransform().view), &eye, &at, &up);
 	Math3D::transform_update(&device->GetTransform());
 }
@@ -64,9 +67,12 @@ void device_draw_primitive(RenderDevice *device, const vertex_t *v1,
 
 		// 裁剪，注意此处可以完善为具体判断几个点在 cvv内以及同cvv相交平面的坐标比例
 		// 进行进一步精细裁剪，将一个分解为几个完全处在 cvv内的三角形
-		if (transform_check_cvv(&c1) != 0) return;
-		if (transform_check_cvv(&c2) != 0) return;
-		if (transform_check_cvv(&c3) != 0) return;
+		if (transform_check_cvv(&c1) != 0) 
+			return;
+		if (transform_check_cvv(&c2) != 0) 
+			return;
+		if (transform_check_cvv(&c3) != 0) 
+			return;
 
 		// 归一化
 		transform_homogenize(&p1, &c1,&device->GetTransform());
@@ -129,33 +135,68 @@ void draw_box(RenderDevice *device, float theta) {
 	draw_plane(device, 3, 7, 4, 0);
 }
 
+void draw_model(RenderDevice* device,float theta)
+{
+	wstring a(L"suzanne.obj");
+	wstring str = Application1::getFullFilePathInResource(a);
+	GameObject* go = ObjLoader::loadOBJ(str);
+
+	matrix_t m;
+	//matrix_set_rotate(&m, -1, -0.5, 1, theta);
+	Math3D::matrix_set_identity(&m);
+	Math3D::matrix_set_translate(&m,0,0,0);
+	//device->GetTransform().world = m;
+	Math3D::matrix_set_equal(&(device->GetTransform().world),&m);
+	Math3D::transform_update(&device->GetTransform());
+
+	for (int i=0;i<go->GetVertexs().size();i+=3)
+	{
+		int j = go->GetVertexs().size();
+		vertex_t p1,p2,p3;
+		p1.color.r = 0.0f;
+		p1.color.g = 0.0f;
+		p1.color.b = 0.0f;
+		p1.pos.x = go->GetVertexs()[i].x;
+		p1.pos.y = go->GetVertexs()[i].y;
+		p1.pos.z = go->GetVertexs()[i].z;
+		p1.pos.w = 1.0f;
+		p1.rhw = 1.0f;
+		p1.tc.u = go->GetUvs()[i].u;
+		p1.tc.v = go->GetUvs()[i].v;
+
+		p2.color.r = 0.0f;
+		p2.color.g = 0.0f;
+		p2.color.b = 0.0f;
+		p2.pos.x = go->GetVertexs()[i+1].x;
+		p2.pos.y = go->GetVertexs()[i+1].y;
+		p2.pos.z = go->GetVertexs()[i+1].z;
+		p2.pos.w = 1.0f;
+		p2.rhw = 1.0f;
+		p2.tc.u = go->GetUvs()[i+1].u;
+		p2.tc.v = go->GetUvs()[i+1].v;
+
+		p3.color.r = 0.0f;
+		p3.color.g = 0.0f;
+		p3.color.b = 0.0f;
+		p3.pos.x = go->GetVertexs()[i+2].x;
+		p3.pos.y = go->GetVertexs()[i+2].y;
+		p3.pos.z = go->GetVertexs()[i+2].z;
+		p3.pos.w = 1.0f;
+		p3.rhw = 1.0f;
+		p3.tc.u = go->GetUvs()[i+2].u;
+		p3.tc.v = go->GetUvs()[i+2].v;
+		
+		device_draw_primitive(device,&p1,&p2,&p3);
+	}
+}
+
 void init_texture(RenderDevice *device) {
 
-	wchar_t last[1000] = L"\\AngryBird3D\\Resources\\yin.bmp";		//图片在工程内位置
-	wchar_t buf[1000];												//图片在硬盘的位置
-	GetModuleFileName(NULL,buf,sizeof(buf));
-	//wcout<<"Texture Location："<<buf<<endl;
-	for (int i=wcslen(buf)-1,k=2;i>=0&&k>0;i--)
-	{
-		if (buf[i]==L'\\')
-		{
-			buf[i] = L'\0';
-			k--;
-		}
-	}
-	//wcout<<"Texture Location："<<buf<<endl;
-	for (int i = 0,j = wcslen(buf);i<wcslen(last);i++,j++)
-	{
-		buf[j] = last[i];
-		if (i == wcslen(last) - 1)
-		{
-			buf[j+1] = L'\0';
-		}
-	}
-	wcout<<"Texture Location："<<buf<<endl;
+	wstring a(L"yin.bmp");
+	wstring str = Application1::getFullFilePathInResource(a);		//C++调用类的静态函数不是通过“类名.函数（）”而是“类名：：函数（）”
 
 	//TextureBMP * _bmp = new TextureBMP("C:\\Users\\hzchenminjian\\Desktop\\MyCode\\AngryBird3D\\AngryBird3D\\Resources\\yin.bmp");
-	TextureBMP * _bmp = new TextureBMP(buf);
+	TextureBMP * _bmp = new TextureBMP(str.c_str());
 	printf("Width:%d,Height:%d",_bmp->Width(),_bmp->Height());
 
 
@@ -169,18 +210,8 @@ void init_texture(RenderDevice *device) {
 	}
 	*/
 	
-	/*
-	for (int j = 0; j < 256; j++) {
-		for (int i = 0; i < 256; i++) {
-			int x = i / 85;
-			texture[j][i] = (x & 1)? 0xffffff : 0x3fbcef;
-		}
-	}
-	*/
-	
-	
-	for (int j = 0; j < 256; j++) {
-		for (int i = 0; i < 256; i++) {
+	for (unsigned int j = 0; j < 256; j++) {
+		for (unsigned int i = 0; i < 256; i++) {
 			if(j<_bmp->Height()&&i<_bmp->Width())
 				texture[j][i] = _bmp->PixelColor(256-j,i);	//因为是上下颠倒的
 			else
@@ -192,6 +223,8 @@ void init_texture(RenderDevice *device) {
 	device->device_set_texture(texture, 256 * 4, 256, 256);
 }
 
+
+//模拟DX，这个工程模拟的是DX的行为方式
 int main()
 {
 	int states[] = { RENDER_STATE_TEXTURE, RENDER_STATE_COLOR, RENDER_STATE_WIREFRAME };
@@ -209,7 +242,8 @@ int main()
 		return -1;
 
 	renderDevice.device_init(800, 600, windowsRelated.getScreenPtr());
-	camera_at_zero(&renderDevice, 4, 0, 0);
+	camera_at_zero(&renderDevice, 4, 0, 0);	//draw box
+	//camera_at_zero(&renderDevice, 0, 0, -3);	//draw monkey
 
 	init_texture(&renderDevice);
 	renderDevice.SetRenderState(RENDER_STATE_TEXTURE);
@@ -224,7 +258,8 @@ int main()
 
 
 
-		draw_box(&renderDevice,0);
+		draw_box(&renderDevice,0);	//draw box
+		//draw_model(&renderDevice,0);	//draw monkey
 
 		windowsRelated.screen_update();
 	}

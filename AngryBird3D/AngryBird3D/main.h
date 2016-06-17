@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "WindowsRelated.h"
+#include "Application.h"
 
 #define RENDER_STATE_WIREFRAME      1		// ‰÷»æœﬂøÚ
 #define RENDER_STATE_TEXTURE        2		// ‰÷»æŒ∆¿Ì

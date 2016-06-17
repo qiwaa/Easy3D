@@ -74,18 +74,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Math3D.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="TextureBMP.cpp" />
+    <ClCompile Include="vector4.cpp" />
     <ClCompile Include="WindowsRelated.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Math3D.h" />
+    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="RenderDevice.h" />
     <ClInclude Include="TextureBMP.h" />
+    <ClInclude Include="type_vec.h" />
+    <ClInclude Include="vector4.h" />
     <ClInclude Include="WindowsRelated.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
