@@ -2,7 +2,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+#*.obj	compare same name with model file
 
 # Precompiled Headers
 *.gch
